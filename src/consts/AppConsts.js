@@ -1,0 +1,1 @@
+export const LOGIN_RESPONSE_KEY = "LOGIN_RESPONSE";

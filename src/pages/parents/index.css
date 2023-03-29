@@ -1,0 +1,32 @@
+/* styles for all screen sizes */
+.box
+{
+    width: 100%;
+}
+
+/* styles for small screens */
+@media (max-width: 600px)
+{
+    .box
+    {
+        height: 20vh;
+    }
+}
+
+/* styles for medium screens */
+@media (min-width: 601px) and (max-width: 900px)
+{
+    .box
+    {
+        height: 40vh;
+    }
+}
+
+/* styles for large screens */
+@media (min-width: 901px)
+{
+    .box
+    {
+        height: 65vh;
+    }
+}
