@@ -4,7 +4,6 @@ import { Box, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../../theme";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import EscalatorWarningIcon from '@mui/icons-material/EscalatorWarning';
 import SchoolIcon from '@mui/icons-material/School';
 import AirlineSeatReclineNormalIcon from '@mui/icons-material/AirlineSeatReclineNormal';
@@ -34,8 +33,7 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
 export default function Sidebar() {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-    const [isCollapsed, setIsCollapsed] = useState(false);
-    const [selected, setSelected] = useState("Dashboard");
+    const [selected, setSelected] = useState("Parents");
 
     return (
         <Box
@@ -55,9 +53,8 @@ export default function Sidebar() {
                 "& .pro-menu-item.active": {
                     color: "#6870fa !important",
                 },
-            }}
-        >
-            <ProSidebar collapsed={isCollapsed} breakPoint= "sm">
+            }}>
+            <ProSidebar>
                 <Menu iconShape="square">
                     {/* LOGO AND MENU ICON */}
                     <MenuItem
@@ -76,70 +73,60 @@ export default function Sidebar() {
                         </Box>
                     </MenuItem>
 
-                    {!isCollapsed && (
-                        <Box mb="25px">
-                            <Box display="flex" justifyContent="center" alignItems="center">
-                                <img
-                                    alt="Default User"
-                                    width="100px"
-                                    height="100px"
-                                    src={`../../assets/icons/userDefault.png`}
-                                    style={{ cursor: "pointer", borderRadius: "50%" }}
-                                />
-                            </Box>
-                            <Box textAlign="center">
-                                <Typography
-                                    variant="h2"
-                                    color={colors.grey[100]}
-                                    fontWeight="bold"
-                                    sx={{ m: "10px 0 0 0" }}>
-                                    Mohammed
-                                </Typography>
-                                <Typography variant="h5" color={colors.greenAccent[500]}>
-                                    Admin
-                                </Typography>
-                            </Box>
+                    <Box mb="25px">
+                        <Box display="flex" justifyContent="center" alignItems="center">
+                            <img
+                                alt="Default User"
+                                width="100px"
+                                height="100px"
+                                src={`../../assets/icons/userDefault.png`}
+                                style={{ cursor: "pointer", borderRadius: "50%" }}
+                            />
                         </Box>
-                    )}
+                        <Box textAlign="center">
+                            <Typography
+                                variant="h2"
+                                color={colors.grey[100]}
+                                fontWeight="bold"
+                                sx={{ m: "10px 0 0 0" }}>
+                                Mohammed
+                            </Typography>
+                            <Typography variant="h5" color={colors.greenAccent[500]}>
+                                Admin
+                            </Typography>
+                        </Box>
+                    </Box>
 
-                    <Box paddingLeft={isCollapsed ? undefined : "12%"}>
-                        <Item
-                            title="Dashboard"
-                            to="/"
-                            icon={<HomeOutlinedIcon />}
-                            selected={selected}
-                            setSelected={setSelected}/>
+                    <Box paddingLeft="12%">
                         <Typography
                             variant="h6"
                             color={colors.grey[300]}
-                            sx={{ m: "15px 0 5px 20px" }}
-                            style={{ opacity: isCollapsed ? 0 : 1 }}>
+                            sx={{ m: "15px 0 5px 20px" }}>
                             School Members
                         </Typography>
                         <Item
                             title="Parents"
-                            to="/parents"
+                            to="/"
                             icon={<EscalatorWarningIcon />}
                             selected={selected}
-                            setSelected={setSelected}/>
+                            setSelected={setSelected} />
                         <Item
                             title="Students"
                             to="/students"
                             icon={<SchoolIcon />}
                             selected={selected}
-                            setSelected={setSelected}/>
+                            setSelected={setSelected} />
                         <Item
                             title="Drivers"
                             to="/drivers"
                             icon={<AirlineSeatReclineNormalIcon />}
                             selected={selected}
-                            setSelected={setSelected}/>
+                            setSelected={setSelected} />
 
                         <Typography
                             variant="h6"
                             color={colors.grey[300]}
-                            sx={{ m: "15px 0 5px 20px" }}
-                            style={{ opacity: isCollapsed ? 0 : 1 }}>
+                            sx={{ m: "15px 0 5px 20px" }}>
                             Transportation
                         </Typography>
                         <Item
@@ -147,19 +134,18 @@ export default function Sidebar() {
                             to="/buses"
                             icon={<DirectionsBusIcon />}
                             selected={selected}
-                            setSelected={setSelected}/>
+                            setSelected={setSelected} />
                         <Item
                             title="Live Tracking"
                             to="/live-tracking"
                             icon={<GpsFixedIcon />}
                             selected={selected}
-                            setSelected={setSelected}/>
-           
+                            setSelected={setSelected} />
+
                         <Typography
                             variant="h6"
                             color={colors.grey[300]}
-                            sx={{ m: "15px 0 5px 20px" }}
-                            style={{ opacity: isCollapsed ? 0 : 1 }}>
+                            sx={{ m: "15px 0 5px 20px" }}>
                             Notes
                         </Typography>
                         <Item
@@ -167,13 +153,13 @@ export default function Sidebar() {
                             to="/parent-notifications"
                             icon={<ContactMailIcon />}
                             selected={selected}
-                            setSelected={setSelected}/>
+                            setSelected={setSelected} />
                         <Item
                             title="Bus Notifications"
                             to="/bus-notifications"
                             icon={<TaxiAlertIcon />}
                             selected={selected}
-                            setSelected={setSelected}/>
+                            setSelected={setSelected} />
                     </Box>
                 </Menu>
             </ProSidebar>

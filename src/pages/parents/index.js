@@ -1,6 +1,7 @@
+import "./index.css";
 import React, { useState, useEffect } from "react";
 import { Box, Button, useTheme } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import AddIcon from '@mui/icons-material/Add';
@@ -8,7 +9,8 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import useAuth from "../../context/AuthContext";
 import ParentService from "../../services/ParentService";
 import { useNavigate } from "react-router-dom";
-import "./index.css";
+import LinearProgress from '@mui/material/LinearProgress';
+import AlertMessage from "../../components/AlertMessage";
 
 export default function Parents() {
     const theme = useTheme();
@@ -89,12 +91,22 @@ export default function Parents() {
 
     const { getAuthToken } = useAuth();
     const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [status, setStatus] = useState("");
+    const [alertOpen, setAlertOpen] = useState(false);
 
     useEffect(() => {
         let ignore = false;
         async function fetchParents() {
             const authToken = await getAuthToken();
             const result = await ParentService.getParents(authToken);
+            if (result == null) {
+                setStatus("Server is not responding");
+                setAlertOpen(true);
+                setLoading(false);
+                return;
+            }
+
             if (result.isSuccess && !ignore) {
                 const parentData = result.response.map((p) => ({
                     id: p.ID,
@@ -106,6 +118,7 @@ export default function Parents() {
                     password: p.Password,
                 }));
                 setData(parentData);
+                setLoading(false);
             }
         };
 
@@ -119,6 +132,13 @@ export default function Parents() {
     function handleCreateButton() {
         navigate("/parents/create");
     }
+
+    const handleClose = (event, reason) => {
+        if (reason === "clickaway") {
+            return;
+        }
+        setAlertOpen(false);
+    };
 
     return (
         <Box m="20px">
@@ -155,9 +175,19 @@ export default function Parents() {
                     "& .MuiCheckbox-root": {
                         color: `${colors.greenAccent[200]} !important`,
                     },
+                    "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+                        color: `${colors.grey[100]} !important`,
+                    },
+                    "& .MuiLinearProgress-colorPrimary": {
+                        backgroundColor: `${colors.grey[100]} !important`,
+                    },
+                    "& .MuiLinearProgress-barColorPrimary": {
+                        backgroundColor: `${colors.greenAccent[500]} !important`,
+                    },
                 }}
                 className="box">
-                <DataGrid rows={data}
+                <DataGrid 
+                    rows={data}
                     columns={columns}
                     initialState={{
                         pagination: {
@@ -168,8 +198,19 @@ export default function Parents() {
                     }}
                     pageSizeOptions={[5]}
                     checkboxSelection
-                    disableRowSelectionOnClick />
+                    disableRowSelectionOnClick 
+                    slots={{
+                        loadingOverlay: LinearProgress,
+                        toolbar: GridToolbar
+                    }}
+                    loading={loading}/>
             </Box>
+            <AlertMessage
+                open={alertOpen}
+                onClose={handleClose}
+                message={status}
+                severity="error"
+                duration={5000} />
         </Box>
     );
 };

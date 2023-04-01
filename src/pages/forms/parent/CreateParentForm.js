@@ -32,6 +32,7 @@ const parentSchema = yup.object().shape({
 });
 
 const initialValues = {
+    id: undefined,
     firstName: "",
     lastName: "",
     email: "",
@@ -53,10 +54,10 @@ export default function CreateParentForm() {
         setAlertOpen(false);
     };
 
-
     const handleFormSubmit = async (values, { setSubmitting }) => {
         const authToken = await getAuthToken();
         const newParent = new ParentDto(values.id, values.firstName, values.lastName, values.email, values.phoneNumber, values.address, values.password);
+        console.log("new parent: ", newParent);
         const result = await ParentService.createParent(authToken, newParent);
 
         setSubmitting(false);
