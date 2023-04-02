@@ -83,6 +83,8 @@ export default function CreateStudentForm() {
         value: "Female"
     }];
 
+    const grades = Array.from({ length: 12 }, (_, i) => i + 1);
+
     const handleFormSubmit = async (values, { setSubmitting }) => {
         const authToken = await getAuthToken();
         const newStudent = new StudentDto(values.id,
@@ -139,11 +141,10 @@ export default function CreateStudentForm() {
                                 helperText={touched.image && errors.image}
                                 sx={{ gridColumn: "span 2" }} />
 
-
                             <TextField
                                 fullWidth
                                 variant="filled"
-                                type="text"
+                                type="number"
                                 label="FaceRecognitionID"
                                 onBlur={handleBlur}
                                 onChange={handleChange}
@@ -201,8 +202,9 @@ export default function CreateStudentForm() {
 
                             <TextField
                                 fullWidth
+                                select
                                 variant="filled"
-                                type="text"
+                                type="number"
                                 label="Grade Level"
                                 onBlur={handleBlur}
                                 onChange={handleChange}
@@ -210,7 +212,13 @@ export default function CreateStudentForm() {
                                 name="gradeLevel"
                                 error={!!touched.gradeLevel && !!errors.gradeLevel}
                                 helperText={touched.gradeLevel && errors.gradeLevel}
-                                sx={{ gridColumn: "span 2" }} />
+                                sx={{ gridColumn: "span 2" }} >
+                                {grades.map((option) => (
+                                    <MenuItem key={option} value={option}>
+                                        {option}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
 
                             <TextField
                                 fullWidth
@@ -228,7 +236,7 @@ export default function CreateStudentForm() {
                             <TextField
                                 fullWidth
                                 variant="filled"
-                                type="text"
+                                type="number"
                                 label="BelongsToBusID"
                                 onBlur={handleBlur}
                                 onChange={handleChange}
@@ -245,7 +253,7 @@ export default function CreateStudentForm() {
                             <TextField
                                 fullWidth
                                 variant="filled"
-                                type="text"
+                                type="number"
                                 label="ParentID"
                                 onBlur={handleBlur}
                                 onChange={handleChange}

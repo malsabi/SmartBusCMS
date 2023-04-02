@@ -11,6 +11,8 @@ import Students from '../students';
 import CreateStudent from "../students/CreateStudent";
 import ManageStudent from "../students/ManageStudent";
 import Drivers from '../drivers';
+import CreateDriver from "../drivers/CreateDriver";
+import ManageDriver from "../drivers/ManageDriver";
 import Buses from '../buses';
 import LiveTracking from '../live-tracking';
 import ParentNotifications from '../parent-notifications';
@@ -38,6 +40,8 @@ export default function AppStack()
                             <Route path="/students/create" element={<CreateStudent />} />
                             <Route path="/students/manage/:id" element={<ManageStudent />} />
                             <Route path="/drivers" element={<Drivers />} />
+                            <Route path="/drivers/create" element={<CreateDriver/>} />
+                            <Route path="/drivers/manage/:id" element={<ManageDriver />} />
                             <Route path="/buses" element={<Buses />} />
                             <Route path="/live-tracking" element={<LiveTracking />} />
                             <Route path="/parent-notifications" element={<ParentNotifications />} />

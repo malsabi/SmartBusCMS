@@ -80,6 +80,8 @@ export default function ManageStudentForm({ id, data }) {
         value: "Female"
     }];
 
+    const grades = Array.from({ length: 12 }, (_, i) => i + 1);
+
     const handleClose = (event, reason) => {
         if (reason === "clickaway") {
             return;
@@ -169,7 +171,7 @@ export default function ManageStudentForm({ id, data }) {
                             <TextField
                                 fullWidth
                                 variant="filled"
-                                type="text"
+                                type="number"
                                 label="FaceRecognitionID"
                                 onBlur={handleBlur}
                                 onChange={handleChange}
@@ -227,8 +229,9 @@ export default function ManageStudentForm({ id, data }) {
 
                             <TextField
                                 fullWidth
+                                select
                                 variant="filled"
-                                type="text"
+                                type="number"
                                 label="Grade Level"
                                 onBlur={handleBlur}
                                 onChange={handleChange}
@@ -236,7 +239,13 @@ export default function ManageStudentForm({ id, data }) {
                                 name="gradeLevel"
                                 error={!!touched.gradeLevel && !!errors.gradeLevel}
                                 helperText={touched.gradeLevel && errors.gradeLevel}
-                                sx={{ gridColumn: "span 2" }} />
+                                sx={{ gridColumn: "span 2" }} >
+                                {grades.map((option) => (
+                                    <MenuItem key={option} value={option}>
+                                        {option}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
 
                             <TextField
                                 fullWidth
@@ -254,7 +263,7 @@ export default function ManageStudentForm({ id, data }) {
                             <TextField
                                 fullWidth
                                 variant="filled"
-                                type="text"
+                                type="number"
                                 label="BelongsToBusID"
                                 onBlur={handleBlur}
                                 onChange={handleChange}
@@ -271,7 +280,7 @@ export default function ManageStudentForm({ id, data }) {
                             <TextField
                                 fullWidth
                                 variant="filled"
-                                type="text"
+                                type="number"
                                 label="ParentID"
                                 onBlur={handleBlur}
                                 onChange={handleChange}
