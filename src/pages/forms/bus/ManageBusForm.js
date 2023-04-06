@@ -1,38 +1,33 @@
 import React, { useState, useMemo } from "react";
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, FormControlLabel, MenuItem, Switch, TextField } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useAuth from "../../../context/AuthContext";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AlertMessage from "../../../components/AlertMessage";
-import ParentService from "../../../services/ParentService";
-import ParentDto from "../../../DTOs/parent/ParentDto";
 import { useNavigate } from "react-router-dom";
+import BusDto from "../../../DTOs/bus/BusDto";
+import BusService from "../../../services/BusService";
 
-const parentSchema = yup.object().shape({
-    firstName: yup
+const busSchema = yup.object().shape({
+    licenseNumber: yup
         .string()
         .required("Required"),
-    lastName: yup
+    capacity: yup
         .string()
         .required("Required"),
-    email: yup
-        .string()
-        .email("Invalid Email Address")
-        .required("Required"),
-    phoneNumber: yup
+    currentLocation: yup
         .string()
         .required("Required"),
-    address: yup
+    destinationType: yup
         .string()
         .required("Required"),
-    password: yup
-        .string()
-        .required("Required")
 });
 
-export default function ManageParentForm({ id, data }) {
+const destinations = ["Home", "School", "None"];
+
+export default function ManageBusForm({ id, data }) {
     const [status, setStatus] = useState("");
     const [alertOpen, setAlertOpen] = useState(false);
     const { getAuthToken } = useAuth();
@@ -41,12 +36,11 @@ export default function ManageParentForm({ id, data }) {
     const initialValues = useMemo(() => {
         return {
             id: data.id,
-            firstName: data.firstName,
-            lastName: data.lastName,
-            email: data.email,
-            phoneNumber: data.phoneNumber,
-            address: data.address,
-            password: data.password,
+            licenseNumber: data.licenseNumber,
+            capacity: data.capacity,
+            currentLocation: data.currentLocation,
+            destinationType: data.destinationType,
+            isInService: data.isInService,
         };
     }, [data]);
 
@@ -59,8 +53,13 @@ export default function ManageParentForm({ id, data }) {
 
     const handleFormSubmit = async (values, { setSubmitting }) => {
         const authToken = await getAuthToken();
-        const updatedParent = new ParentDto(values.id, values.firstName, values.lastName, values.email, values.phoneNumber, values.address, values.password);
-        const result = await ParentService.updateParent(authToken, id, updatedParent);
+        const updatedBus = new BusDto(values.id,
+            values.licenseNumber,
+            values.capacity,
+            values.currentLocation,
+            values.destinationType,
+            values.isInService);
+        const result = await BusService.updateBus(authToken, id, updatedBus);
 
         setSubmitting(false);
 
@@ -71,7 +70,7 @@ export default function ManageParentForm({ id, data }) {
         }
 
         if (result.isSuccess) {
-            navigate("/parents");
+            navigate("/buses");
             return;
         }
 
@@ -81,7 +80,7 @@ export default function ManageParentForm({ id, data }) {
 
     const handleDelete = async () => {
         const authToken = await getAuthToken();
-        const result = await ParentService.deleteParent(authToken, id);
+        const result = await BusService.deleteBus(authToken, id);
 
         if (result == null) {
             setStatus("Server is not responding");
@@ -90,7 +89,7 @@ export default function ManageParentForm({ id, data }) {
         }
 
         if (result.isSuccess) {
-            navigate("/parents");
+            navigate("/buses");
             return;
         }
 
@@ -100,87 +99,81 @@ export default function ManageParentForm({ id, data }) {
 
     return (
         <Box>
-            <Formik onSubmit={handleFormSubmit} initialValues={initialValues} validationSchema={parentSchema}>
+            <Formik onSubmit={handleFormSubmit} initialValues={initialValues} validationSchema={busSchema}>
                 {({ values, errors, touched, handleBlur, handleChange, handleSubmit, isSubmitting }) => (
                     <form onSubmit={handleSubmit}>
                         <Box mt="40px" display="grid" gap="30px" gridTemplateColumns="repeat(4, minmax(0, 1fr))" width="50%">
+                        <TextField
+                                fullWidth
+                                variant="filled"
+                                type="number"
+                                label="License Number"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                value={values.licenseNumber}
+                                name="licenseNumber"
+                                error={!!touched.licenseNumber && !!errors.licenseNumber}
+                                helperText={touched.licenseNumber && errors.licenseNumber}
+                                sx={{ gridColumn: "span 2" }} />
+
                             <TextField
                                 fullWidth
                                 variant="filled"
-                                type="text"
-                                label="First Name"
+                                type="number"
+                                label="Capacity"
                                 onBlur={handleBlur}
                                 onChange={handleChange}
-                                value={values.firstName}
-                                name="firstName"
-                                error={!!touched.firstName && !!errors.firstName}
-                                helperText={touched.firstName && errors.firstName}
+                                value={values.capacity}
+                                name="capacity"
+                                error={!!touched.capacity && !!errors.capacity}
+                                helperText={touched.capacity && errors.capacity}
                                 sx={{ gridColumn: "span 2" }} />
 
                             <TextField
                                 fullWidth
                                 variant="filled"
                                 type="text"
-                                label="Last Name"
+                                label="Current Location"
                                 onBlur={handleBlur}
                                 onChange={handleChange}
-                                value={values.lastName}
-                                name="lastName"
-                                error={!!touched.lastName && !!errors.lastName}
-                                helperText={touched.lastName && errors.lastName}
+                                value={values.currentLocation}
+                                name="currentLocation"
+                                error={!!touched.currentLocation && !!errors.currentLocation}
+                                helperText={touched.currentLocation && errors.currentLocation}
                                 sx={{ gridColumn: "span 2" }} />
 
                             <TextField
                                 fullWidth
+                                select
                                 variant="filled"
                                 type="text"
-                                label="Email Address"
+                                label="Destination Type"
                                 onBlur={handleBlur}
                                 onChange={handleChange}
-                                value={values.email}
-                                name="email"
-                                error={!!touched.email && !!errors.email}
-                                helperText={touched.email && errors.email}
-                                sx={{ gridColumn: "span 2" }} />
+                                value={values.destinationType}
+                                name="destinationType"
+                                error={!!touched.destinationType && !!errors.destinationType}
+                                helperText={touched.destinationType && errors.destinationType}
+                                sx={{ gridColumn: "span 2" }} >
+                                {destinations.map((option, index) => (
+                                    <MenuItem key={index} value={index}>
+                                        {option}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
 
-                            <TextField
-                                fullWidth
-                                variant="filled"
-                                type="text"
-                                label="Phone Number"
-                                onBlur={handleBlur}
-                                onChange={handleChange}
-                                value={values.phoneNumber}
-                                name="phoneNumber"
-                                error={!!touched.phoneNumber && !!errors.phoneNumber}
-                                helperText={touched.phoneNumber && errors.phoneNumber}
-                                sx={{ gridColumn: "span 2" }} />
-
-                            <TextField
-                                fullWidth
-                                variant="filled"
-                                type="text"
-                                label="Address"
-                                onBlur={handleBlur}
-                                onChange={handleChange}
-                                value={values.address}
-                                name="address"
-                                error={!!touched.address && !!errors.address}
-                                helperText={touched.address && errors.address}
-                                sx={{ gridColumn: "span 2" }} />
-
-                            <TextField
-                                fullWidth
-                                variant="filled"
-                                type="password"
-                                label="Password"
-                                onBlur={handleBlur}
-                                onChange={handleChange}
-                                value={values.password}
-                                name="password"
-                                error={!!touched.password && !!errors.password}
-                                helperText={touched.password && errors.password}
-                                sx={{ gridColumn: "span 2" }} />
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={values.isInService}
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        value={values.isInService}
+                                        name="isInService"
+                                        color="secondary"
+                                        size="medium" />}
+                                label="Is In Service"
+                                sx={{ gridColumn: "span 4" }} />
 
                             <Box sx={{ display: 'flex', gap: '1rem' }}>
                                 <Button type="submit" disabled={isSubmitting} color="info" variant="contained" size="large" startIcon={<EditIcon />} sx={{ flexGrow: 1, flexShrink: 1 }}>

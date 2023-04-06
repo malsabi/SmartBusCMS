@@ -10,7 +10,6 @@ import AirlineSeatReclineNormalIcon from '@mui/icons-material/AirlineSeatRecline
 import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
 import GpsFixedIcon from '@mui/icons-material/GpsFixed';
 import ContactMailIcon from '@mui/icons-material/ContactMail';
-import TaxiAlertIcon from '@mui/icons-material/TaxiAlert';
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
     const theme = useTheme();
@@ -149,15 +148,9 @@ export default function Sidebar() {
                             Notes
                         </Typography>
                         <Item
-                            title="Parent Notifications"
-                            to="/parent-notifications"
+                            title="Notifications"
+                            to="/notifications"
                             icon={<ContactMailIcon />}
-                            selected={selected}
-                            setSelected={setSelected} />
-                        <Item
-                            title="Bus Notifications"
-                            to="/bus-notifications"
-                            icon={<TaxiAlertIcon />}
                             selected={selected}
                             setSelected={setSelected} />
                     </Box>

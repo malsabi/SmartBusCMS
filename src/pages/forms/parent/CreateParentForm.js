@@ -3,7 +3,7 @@ import { Box, Button, TextField } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useAuth from "../../../context/AuthContext";
-import ParentDto from "../../../DTOs/Parent/ParentDto";
+import ParentDto from "../../../DTOs/parent/ParentDto";
 import { useNavigate } from "react-router-dom";
 import ParentService from "../../../services/ParentService";
 import AddIcon from '@mui/icons-material/Add';

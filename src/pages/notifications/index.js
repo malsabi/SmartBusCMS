@@ -7,12 +7,12 @@ import Header from "../../components/Header";
 import AddIcon from '@mui/icons-material/Add';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import useAuth from "../../context/AuthContext";
-import BusService from "../../services/BusService";
+import NotificationService from "../../services/NotificationService";
 import { useNavigate } from "react-router-dom";
 import LinearProgress from '@mui/material/LinearProgress';
 import AlertMessage from "../../components/AlertMessage";
 
-export default function Buses() {
+export default function Notifications() {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const navigate = useNavigate();
@@ -22,40 +22,48 @@ export default function Buses() {
             headerName: "ID"
         },
         {
-            field: "licenseNumber",
-            headerName: "License Number",
+            field: "title",
+            headerName: "Title",
             headerAlign: "left",
             align: "left",
             flex: 1,
             minWidth: 100,
         },
         {
-            field: "capacity",
-            headerName: "Capacity",
+            field: "message",
+            headerName: "Message",
             headerAlign: "left",
             align: "left",
             flex: 1,
             minWidth: 100,
         },
         {
-            field: "currentLocation",
-            headerName: "Current Location",
+            field: "timestamp",
+            headerName: "Timestamp",
             headerAlign: "left",
             align: "left",
             flex: 1,
             minWidth: 100,
         },
         {
-            field: "destinationType",
-            headerName: "Destination Type",
+            field: "isOpened",
+            headerName: "Is Opened",
             headerAlign: "left",
             align: "left",
             flex: 1,
             minWidth: 100,
         },
         {
-            field: "isInService",
-            headerName: "Is In Service",
+            field: "parentID",
+            headerName: "Parent ID",
+            headerAlign: "left",
+            align: "left",
+            flex: 1,
+            minWidth: 100,
+        },
+        {
+            field: "busID",
+            headerName: "BusID",
             headerAlign: "left",
             align: "left",
             flex: 1,
@@ -69,7 +77,7 @@ export default function Buses() {
                 const navigate = useNavigate();
                 const handleEdit = () => {
                     const id = row.id;
-                    navigate(`/buses/manage/${id}`, { state: { row } });
+                    navigate(`/notifications/manage/${id}`, { state: { row } });
                 };
                 return (
                     <Button onClick={handleEdit} size="large" color="success" variant="contained" startIcon={<ManageAccountsIcon />}>
@@ -89,9 +97,10 @@ export default function Buses() {
 
     useEffect(() => {
         let ignore = false;
-        async function fetchBuses() {
+        async function fetchNotifications() {
             const authToken = await getAuthToken();
-            const result = await BusService.getBuses(authToken);
+            const result = await NotificationService.getNotifications(authToken);
+
             if (result == null) {
                 setStatus("Server is not responding");
                 setAlertOpen(true);
@@ -100,29 +109,34 @@ export default function Buses() {
             }
 
             if (result.isSuccess && !ignore) {
-                const busData = result.response.map((p) => ({
+                const notificationData = result.response.map((p) => ({
                     id: p.ID,
-                    licenseNumber: p.LicenseNumber,
-                    capacity: p.Capacity,
-                    currentLocation: p.CurrentLocation,
-                    destinationType: p.DestinationType,
-                    isInService: p.IsInService,
+                    title: p.Title,
+                    message: p.Message,
+                    timestamp: p.Timestamp,
+                    isOpened: p.IsOpened,
+                    parentID: p.ParentID,
+                    busID: p.BusID,
                 }));
 
-                for (var i = 0; i < busData.length; i++)
+                for (var i = 0; i < notificationData.length; i++)
                 {
-                    if (busData[i].currentLocation === "")
+                    if (!notificationData[i].parentID)
                     {
-                        busData[i].currentLocation = "N/A";
+                        notificationData[i].parentID = "N/A";
+                    }
+                    if (!notificationData[i].busID)
+                    {
+                        notificationData[i].busID = "N/A";
                     }
                 }
 
-                setData(busData);
+                setData(notificationData);
                 setLoading(false);
             }
         };
 
-        fetchBuses();
+        fetchNotifications();
 
         return () => {
             ignore = true;
@@ -130,7 +144,7 @@ export default function Buses() {
     }, []);
 
     function handleCreateButton() {
-        navigate("/buses/create");
+        navigate("/notifications/create");
     }
 
     const handleClose = (event, reason) => {
@@ -142,7 +156,7 @@ export default function Buses() {
 
     return (
         <Box m="20px">
-            <Header title="BUSES" subtitle="Managing the Buses Vehicle" />
+            <Header title="NOTIFICATIONS" subtitle="Managing the Parent and Bus Notifications" />
 
             <Box m={1} display="flex" justifyContent="flex-end" alignItems="flex-end">
                 <Button color="secondary" size="large" variant="contained" startIcon={<AddIcon />} sx={{ fontSize: 18 }} onClick={handleCreateButton}>

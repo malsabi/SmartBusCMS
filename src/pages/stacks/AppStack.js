@@ -14,9 +14,12 @@ import Drivers from '../drivers';
 import CreateDriver from "../drivers/CreateDriver";
 import ManageDriver from "../drivers/ManageDriver";
 import Buses from '../buses';
+import CreateBus from "../buses/CreateBus";
+import ManageBus from "../buses/ManageBus";
 import LiveTracking from '../live-tracking';
-import ParentNotifications from '../parent-notifications';
-import BusNotifications from '../bus-notifications';
+import Notifications from '../notifications';
+import CreateNotification from "../notifications/CreateNotification";
+import ManageNotification from "../notifications/ManageNotification";
 import NoMatch from '../no-match';
 
 export default function AppStack()
@@ -43,9 +46,12 @@ export default function AppStack()
                             <Route path="/drivers/create" element={<CreateDriver/>} />
                             <Route path="/drivers/manage/:id" element={<ManageDriver />} />
                             <Route path="/buses" element={<Buses />} />
+                            <Route path="/buses/create" element={<CreateBus/>} />
+                            <Route path="/buses/manage/:id" element={<ManageBus />} />
                             <Route path="/live-tracking" element={<LiveTracking />} />
-                            <Route path="/parent-notifications" element={<ParentNotifications />} />
-                            <Route path="/bus-notifications" element={<BusNotifications />} />
+                            <Route path="/notifications" element={<Notifications />} />
+                            <Route path="/notifications/create" element={<CreateNotification/>} />
+                            <Route path="/notifications/manage/:id" element={<ManageNotification />} />
                             <Route path="*" element={<NoMatch />} />
                         </Routes>
                     </main>

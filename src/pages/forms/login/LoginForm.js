@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { Box, Button, TextField } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
-import Header from "../../components/Header";
-import AuthService from "../../services/AuthService";
-import AlertMessage from "../../components/AlertMessage";
-import useAuth from "../../context/AuthContext";
-import LoginAdminResponseDto from "../../DTOs/LoginAdminResponseDto";
+import Header from "../../../components/Header";
+import AuthService from "../../../services/AuthService";
+import AlertMessage from "../../../components/AlertMessage";
+import useAuth from "../../../context/AuthContext";
+import LoginAdminResponseDto from "../../../DTOs/login/LoginAdminResponseDto";
 
 const initialValues = {
     emailAddress: "",
