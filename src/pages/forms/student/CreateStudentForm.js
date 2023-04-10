@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Button, FormControlLabel, MenuItem, Switch, TextField } from "@mui/material";
+import { Box, Button, FormControlLabel, MenuItem, Switch, TextField, useTheme } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useAuth from "../../../context/AuthContext";
@@ -11,6 +11,7 @@ import StudentService from "../../../services/StudentService";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
+import { DEFAULT_STUDENT_IMAGE } from "../../../consts/AppConsts";
 
 const studentSchema = yup.object().shape({
     faceRecognitionID: yup
@@ -48,7 +49,7 @@ const studentSchema = yup.object().shape({
 const initialValues = {
     id: undefined,
     faceRecognitionID: "",
-    image: "",
+    image: DEFAULT_STUDENT_IMAGE,
     firstName: "",
     lastName: "",
     gender: "",
@@ -68,6 +69,8 @@ export default function CreateStudentForm() {
     const [alertOpen, setAlertOpen] = useState(false);
     const { getAuthToken } = useAuth();
     const navigate = useNavigate();
+    const [imagePreview, setImagePreview] = useState(DEFAULT_STUDENT_IMAGE);
+    const theme = useTheme();
 
     const handleClose = (event, reason) => {
         if (reason === "clickaway") {
@@ -128,7 +131,46 @@ export default function CreateStudentForm() {
                 {({ values, errors, touched, handleBlur, handleChange, handleSubmit, isSubmitting }) => (
                     <form onSubmit={handleSubmit}>
                         <Box mt="40px" display="grid" gap="30px" gridTemplateColumns="repeat(4, minmax(0, 1fr))" width="50%">
-                        <TextField
+
+                            <Button color="info" variant="contained" size="large" component="label" sx={{ gridColumn: "span 4" }}>
+                                Upload Image
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    hidden
+                                    onChange={(event) => {
+                                        const file = event.target.files[0];
+                                        if (file) {
+                                            const reader = new FileReader();
+                                            reader.onload = (e) => {
+                                                const base64Raw = e.target.result.split(",")[1];
+                                                handleChange({
+                                                    target: {
+                                                        name: "image",
+                                                        value: base64Raw,
+                                                    },
+                                                });
+                                                setImagePreview(base64Raw);
+                                            };
+                                            reader.readAsDataURL(file);
+                                        }
+                                    }} />
+                            </Button>
+
+                            <Box sx={{ gridColumn: "span 4" }}>
+                                <img
+                                    src={`data:image/png;base64,${imagePreview}`}
+                                    alt="Student Preview"
+                                    style={{
+                                        width: "auto",
+                                        height: "170px",
+                                        objectFit: "contain",
+                                        borderRadius: "25%",
+                                        border: `3px solid ${theme.palette.secondary.main}`,
+                                    }} />
+                            </Box>
+
+                            <TextField
                                 fullWidth
                                 variant="filled"
                                 type="text"
@@ -247,7 +289,18 @@ export default function CreateStudentForm() {
                                 sx={{ gridColumn: "span 2" }} />
 
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DateTimePicker label="Last Seen" onChange={handleChange} value={values.lastSeen} sx={{ gridColumn: "span 2" }} />
+                                <DateTimePicker
+                                    label="Last Seen" 
+                                    onChange={(date) => {
+                                    handleChange({
+                                        target: {
+                                        name: "lastSeen",
+                                        value: date,
+                                        },
+                                    });
+                                    }} 
+                                    value={values.lastSeen}
+                                    sx={{ gridColumn: "span 2" }} />
                             </LocalizationProvider>
 
                             <TextField
@@ -265,42 +318,42 @@ export default function CreateStudentForm() {
 
                             <FormControlLabel
                                 control={
-                                <Switch
-                                    checked={values.isAtSchool}
-                                    onBlur={handleBlur}
-                                    onChange={handleChange}
-                                    value={values.isAtSchool}
-                                    name="isAtSchool"
-                                    color="secondary"
-                                    size="medium" />} 
-                                label="Is At School" 
+                                    <Switch
+                                        checked={values.isAtSchool}
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        value={values.isAtSchool}
+                                        name="isAtSchool"
+                                        color="secondary"
+                                        size="medium" />}
+                                label="Is At School"
                                 sx={{ gridColumn: "span 4" }} />
 
                             <FormControlLabel
                                 control={
-                                <Switch
-                                    checked={values.isAtHome}
-                                    onBlur={handleBlur}
-                                    onChange={handleChange}
-                                    value={values.isAtHome}
-                                    name="isAtHome"
-                                    color="secondary"
-                                    size="medium" />} 
-                                label="Is At Home" 
+                                    <Switch
+                                        checked={values.isAtHome}
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        value={values.isAtHome}
+                                        name="isAtHome"
+                                        color="secondary"
+                                        size="medium" />}
+                                label="Is At Home"
                                 sx={{ gridColumn: "span 4" }} />
 
                             <FormControlLabel
                                 control={
-                                <Switch
-                                    checked={values.isOnBus}
-                                    onBlur={handleBlur}
-                                    onChange={handleChange}
-                                    value={values.isOnBus}
-                                    name="isOnBus"
-                                    color="secondary"
-                                    size="medium" />} 
-                                label="Is On Bus" 
-                                sx={{ gridColumn: "span 4" }} />    
+                                    <Switch
+                                        checked={values.isOnBus}
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        value={values.isOnBus}
+                                        name="isOnBus"
+                                        color="secondary"
+                                        size="medium" />}
+                                label="Is On Bus"
+                                sx={{ gridColumn: "span 4" }} />
 
                             <Box mt="20px">
                                 <Button type="submit" disabled={isSubmitting} color="info" variant="contained" size="large" startIcon={<AddIcon />} sx={{ flexGrow: 1, flexShrink: 1 }}>

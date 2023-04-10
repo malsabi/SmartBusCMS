@@ -10,6 +10,8 @@ import AirlineSeatReclineNormalIcon from '@mui/icons-material/AirlineSeatRecline
 import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
 import GpsFixedIcon from '@mui/icons-material/GpsFixed';
 import ContactMailIcon from '@mui/icons-material/ContactMail';
+import { useEffect } from "react";
+import useAuth from "../../context/AuthContext";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
     const theme = useTheme();
@@ -33,6 +35,26 @@ export default function Sidebar() {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [selected, setSelected] = useState("Parents");
+    const { getAdminInfo } = useAuth();
+    const [adminInfo, setAdminInfo] = useState("");
+
+    useEffect(() => {
+        let ignore = false;
+        async function handleAdminInfo() {
+            if (!ignore)
+            {
+                const data = await getAdminInfo();
+                console.log("data", data);
+                setAdminInfo(data);
+            }
+        };
+
+        handleAdminInfo();
+
+        return () => {
+            ignore = true;
+        };
+    }, []);
 
     return (
         <Box
@@ -88,7 +110,7 @@ export default function Sidebar() {
                                 color={colors.grey[100]}
                                 fontWeight="bold"
                                 sx={{ m: "10px 0 0 0" }}>
-                                Mohammed
+                                {adminInfo.FirstName} {adminInfo.LastName}
                             </Typography>
                             <Typography variant="h5" color={colors.greenAccent[500]}>
                                 Admin

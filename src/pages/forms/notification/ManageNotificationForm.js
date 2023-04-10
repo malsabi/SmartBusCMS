@@ -61,29 +61,15 @@ export default function ManageNotificationForm({ id, data }) {
             values.parentID,
             values.busID);
 
-        console.log(updatedNotification);
-
-        if (!updatedNotification.parentID && !updatedNotification.busID)
-        {
-            setStatus("Cannot update an empty notification, please set the target for parent or bus.");
-            setAlertOpen(true);
-            return;
-        }
-        else if (!updatedNotification.parentID || updatedNotification.parentID === "N/A")
+        if (updatedNotification.parentID === "N/A")
         {
             updatedNotification.parentID = undefined;
         }
-        else if (!updatedNotification.busID || !updatedNotification.busID === "N/A")
+        else if (updatedNotification.busID === "N/A")
         {
             updatedNotification.busID = undefined;
-        }
-        else
-        {
-            setStatus("Cannot update a notification for both parent and bus.");
-            setAlertOpen(true);
-            return;
-        }
-        
+        }    
+
         const result = await NotificationService.updateNotification(authToken, id, updatedNotification);
 
         setSubmitting(false);
@@ -95,7 +81,7 @@ export default function ManageNotificationForm({ id, data }) {
         }
 
         if (result.isSuccess) {
-            //navigate("/notifications");
+            navigate("/notifications");
             return;
         }
 
@@ -155,7 +141,18 @@ export default function ManageNotificationForm({ id, data }) {
                                 sx={{ gridColumn: "span 2" }} />
 
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DateTimePicker label="Timestamp" onChange={handleChange} value={values.timestamp} sx={{ gridColumn: "span 2" }} />
+                                <DateTimePicker
+                                    label="Timestamp" 
+                                    onChange={(date) => {
+                                    handleChange({
+                                        target: {
+                                        name: "timestamp",
+                                        value: date,
+                                        },
+                                    });
+                                    }} 
+                                    value={values.timestamp}
+                                    sx={{ gridColumn: "span 2" }} />
                             </LocalizationProvider>
 
                             <FormControlLabel
@@ -169,32 +166,6 @@ export default function ManageNotificationForm({ id, data }) {
                                         color="secondary"
                                         size="medium" />}
                                 label="Is Opened"
-                                sx={{ gridColumn: "span 2" }} />
-
-                            <TextField
-                                fullWidth
-                                variant="filled"
-                                type="number"
-                                label="Parent ID"
-                                onBlur={handleBlur}
-                                onChange={handleChange}
-                                value={values.parentID}
-                                name="parentID"
-                                error={!!touched.parentID && !!errors.parentID}
-                                helperText={touched.parentID && errors.parentID}
-                                sx={{ gridColumn: "span 2" }} />
-
-                            <TextField
-                                fullWidth
-                                variant="filled"
-                                type="number"
-                                label="Bus ID"
-                                onBlur={handleBlur}
-                                onChange={handleChange}
-                                value={values.busID}
-                                name="busID"
-                                error={!!touched.busID && !!errors.busID}
-                                helperText={touched.busID && errors.busID}
                                 sx={{ gridColumn: "span 2" }} />
 
                             <Box sx={{ display: 'flex', gap: '1rem' }}>

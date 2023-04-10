@@ -130,7 +130,18 @@ export default function CreateNotificationForm() {
                                 sx={{ gridColumn: "span 2" }} />
 
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DateTimePicker label="Timestamp" onChange={handleChange} value={values.timestamp} sx={{ gridColumn: "span 2" }} />
+                                <DateTimePicker
+                                    label="Timestamp" 
+                                    onChange={(date) => {
+                                    handleChange({
+                                        target: {
+                                        name: "timestamp",
+                                        value: date,
+                                        },
+                                    });
+                                    }} 
+                                    value={values.timestamp}
+                                    sx={{ gridColumn: "span 2" }} />
                             </LocalizationProvider>
 
                             <FormControlLabel
