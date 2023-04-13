@@ -192,7 +192,7 @@ export default function Parents() {
                     initialState={{
                         pagination: {
                             paginationModel: {
-                                pageSize: 5,
+                                pageSize: 15,
                             },
                         },
                     }}
