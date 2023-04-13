@@ -43,9 +43,7 @@ export default function Sidebar() {
         async function handleAdminInfo() {
             if (!ignore)
             {
-                const data = await getAdminInfo();
-                console.log("data", data);
-                setAdminInfo(data);
+                setAdminInfo(await getAdminInfo());
             }
         };
 
