@@ -5,17 +5,27 @@ import Header from "../../components/Header";
 import BingMapsReact from "bingmaps-react"
 import useAuth from "../../context/AuthContext";
 import BusService from "../../services/BusService";
+import AlertMessage from "../../components/AlertMessage";
 
 export default function LiveTracking() {
 
     const { getAuthToken } = useAuth();
     const [pushPins, setPushPins] = useState([]);
+    const [status, setStatus] = useState("");
+    const [alertOpen, setAlertOpen] = useState(false);
 
     useEffect(() => {
         const timerId = setTimeout(async () => {
             const currentPushPins = [];
             const authToken = await getAuthToken();
-            const result = await BusService.getBuses(authToken);
+            const result = await new BusService().getBuses(authToken);
+
+            if (result == null) {
+                setStatus("Server is not responding");
+                setAlertOpen(true);
+                return;
+            }
+
             if (result.isSuccess) {
                 for (var i = 0; i < result.response.length; i++) 
                 {
@@ -38,7 +48,14 @@ export default function LiveTracking() {
             setPushPins(currentPushPins);
         }, 3000);
         return () => clearTimeout(timerId);
-    }, []);
+    }, [getAuthToken]);
+
+    const handleClose = (event, reason) => {
+        if (reason === "clickaway") {
+            return;
+        }
+        setAlertOpen(false);
+    };
 
     return (
         <Box m="20px">
@@ -58,6 +75,12 @@ export default function LiveTracking() {
                         zoom: 8,
                     }} />
             </Box>
+            <AlertMessage
+                open={alertOpen}
+                onClose={handleClose}
+                message={status}
+                severity="error"
+                duration={5000} />
         </Box>
     );
 };

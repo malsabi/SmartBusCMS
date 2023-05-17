@@ -141,7 +141,6 @@ export default function Students() {
             headerName: "Actions",
             flex: 1,
             renderCell: ({ row }) => {
-                const navigate = useNavigate();
                 const handleEdit = () => {
                     const id = row.id;
                     navigate(`/students/manage/${id}`, { state: { row } });
@@ -166,7 +165,7 @@ export default function Students() {
         let ignore = false;
         async function fetchStudents() {
             const authToken = await getAuthToken();
-            const result = await StudentService.getStudents(authToken);
+            const result = await new StudentService().getStudents(authToken);
 
             if (result == null) {
                 setStatus("Server is not responding");
@@ -206,7 +205,7 @@ export default function Students() {
         return () => {
             ignore = true;
         };
-    }, []);
+    }, [getAuthToken]);
 
     function handleCreateButton() {
         navigate("/students/create");

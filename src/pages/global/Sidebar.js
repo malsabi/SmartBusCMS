@@ -52,7 +52,7 @@ export default function Sidebar() {
         return () => {
             ignore = true;
         };
-    }, []);
+    }, [getAdminInfo]);
 
     return (
         <Box

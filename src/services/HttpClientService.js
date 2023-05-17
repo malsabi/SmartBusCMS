@@ -116,4 +116,4 @@ class HttpClientService {
     }
 }
 
-export default new HttpClientService();
+export default HttpClientService;

@@ -90,7 +90,6 @@ export default function Drivers() {
             headerName: "Actions",
             flex: 1,
             renderCell: ({ row }) => {
-                const navigate = useNavigate();
                 const handleEdit = () => {
                     const id = row.id;
                     navigate(`/drivers/manage/${id}`, { state: { row } });
@@ -115,7 +114,7 @@ export default function Drivers() {
         let ignore = false;
         async function fetchDrivers() {
             const authToken = await getAuthToken();
-            const result = await DriverService.getDrivers(authToken);
+            const result = await new DriverService().getDrivers(authToken);
 
             if (result == null) {
                 setStatus("Server is not responding");
@@ -144,7 +143,6 @@ export default function Drivers() {
                     }
                 }
 
-                console.log("driverData", driverData);
                 setData(driverData);
                 setLoading(false);
             }
@@ -155,7 +153,7 @@ export default function Drivers() {
         return () => {
             ignore = true;
         };
-    }, []);
+    }, [getAuthToken]);
 
     function handleCreateButton() {
         navigate("/drivers/create");

@@ -74,7 +74,6 @@ export default function Parents() {
             headerName: "Actions",
             flex: 1,
             renderCell: ({ row }) => {
-                const navigate = useNavigate();
                 const handleEdit = () => {
                     const id = row.id;
                     navigate(`/parents/manage/${id}`, { state: { row } });
@@ -99,9 +98,10 @@ export default function Parents() {
         let ignore = false;
         async function fetchParents() {
             const authToken = await getAuthToken();
-            const result = await ParentService.getParents(authToken);
+            const result = await new ParentService().getParents(authToken);
             if (result == null) {
                 setStatus("Server is not responding");
+                setData([]);
                 setAlertOpen(true);
                 setLoading(false);
                 return;
@@ -123,11 +123,11 @@ export default function Parents() {
         };
 
         fetchParents();
-
+        console.log("Working");
         return () => {
             ignore = true;
         };
-    }, []);
+    }, [getAuthToken]);
 
     function handleCreateButton() {
         navigate("/parents/create");

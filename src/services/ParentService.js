@@ -4,28 +4,28 @@ class ParentService
 {
     async getParents(authToken)
     {
-        return HttpClientService.getAsync('/Parent', authToken);
+        return new HttpClientService().getAsync('/Parent', authToken);
     }
 
     async getParent(authToken, parentID)
     {
-        return HttpClientService.getAsync('/Parent/{0}', authToken, parentID);
+        return new HttpClientService().getAsync('/Parent/{0}', authToken, parentID);
     }
 
     async createParent(authToken, parentDto)
     {
-        return HttpClientService.postAsync(parentDto, '/Parent', authToken);
+        return new HttpClientService().postAsync(parentDto, '/Parent', authToken);
     }
 
     async updateParent(authToken, parentID, parentDto)
     {
-        return HttpClientService.putAsync(parentDto, '/Parent/{0}', authToken, parentID);
+        return new HttpClientService().putAsync(parentDto, '/Parent/{0}', authToken, parentID);
     }
 
     async deleteParent(authToken, parentID)
     {
-        return HttpClientService.deleteAsync('/Parent/{0}', authToken, parentID);
+        return new HttpClientService().deleteAsync('/Parent/{0}', authToken, parentID);
     }
 }
 
-export default new ParentService();
+export default ParentService;

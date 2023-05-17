@@ -66,7 +66,6 @@ export default function Buses() {
             headerName: "Actions",
             flex: 1,
             renderCell: ({ row }) => {
-                const navigate = useNavigate();
                 const handleEdit = () => {
                     const id = row.id;
                     navigate(`/buses/manage/${id}`, { state: { row } });
@@ -91,7 +90,7 @@ export default function Buses() {
         let ignore = false;
         async function fetchBuses() {
             const authToken = await getAuthToken();
-            const result = await BusService.getBuses(authToken);
+            const result = await new BusService().getBuses(authToken);
             if (result == null) {
                 setStatus("Server is not responding");
                 setAlertOpen(true);
@@ -127,7 +126,7 @@ export default function Buses() {
         return () => {
             ignore = true;
         };
-    }, []);
+    }, [getAuthToken]);
 
     function handleCreateButton() {
         navigate("/buses/create");

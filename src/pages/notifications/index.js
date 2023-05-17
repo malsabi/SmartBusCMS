@@ -74,7 +74,6 @@ export default function Notifications() {
             headerName: "Actions",
             flex: 1,
             renderCell: ({ row }) => {
-                const navigate = useNavigate();
                 const handleEdit = () => {
                     const id = row.id;
                     navigate(`/notifications/manage/${id}`, { state: { row } });
@@ -99,7 +98,7 @@ export default function Notifications() {
         let ignore = false;
         async function fetchNotifications() {
             const authToken = await getAuthToken();
-            const result = await NotificationService.getNotifications(authToken);
+            const result = await new NotificationService().getNotifications(authToken);
 
             if (result == null) {
                 setStatus("Server is not responding");
@@ -141,7 +140,7 @@ export default function Notifications() {
         return () => {
             ignore = true;
         };
-    }, []);
+    }, [getAuthToken]);
 
     function handleCreateButton() {
         navigate("/notifications/create");
